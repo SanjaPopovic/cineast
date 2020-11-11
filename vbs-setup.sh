@@ -40,6 +40,7 @@ java -jar cineast-runtime/build/libs/cineast-runtime-2.5-full.jar vbs.json impor
 java -jar cineast-runtime/build/libs/cineast-runtime-2.5-full.jar vbs.json import --no-finalize --type TAGS --input $base/text/V3C1Tags --threads $threads --batchsize 35000 >> tags_import_$currtime.log
 java -jar cineast-runtime/build/libs/cineast-runtime-2.5-full.jar vbs.json import --no-finalize --type V3C1CLASSIFICATIONS --input $base/text/V3C1Analysis --threads $threads --batchsize 25000 >> text_import_$currtime.log
 java -jar cineast-runtime/build/libs/cineast-runtime-2.5-full.jar vbs.json import --no-finalize --type V3C1FACES --input $base/text/V3C1Analysis/faces --threads $threads --batchsize 25000 >> text_import_$currtime.log
+echo "importing mlt-features"
 java -jar cineast-runtime/build/libs/cineast-runtime-2.5-full.jar vbs.json import --no-finalize --type OBJECTINSTANCE --input $base/features.csv --threads $threads --batchsize 400 >> mlt_import_$currtime.log
 
 sleep $sleep
