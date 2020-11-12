@@ -12,10 +12,10 @@ restart_cottontail () {
   echo "restarting cottontail"
   kill $(pgrep --full cottontail)
   cd ..
-  cd cottontaildb
+  cd cottontaildb || exit
   tmux new-window -d -n cottontaildb "./gradlew run >> cottontail_$(timestamp).log"
   cd ..
-  cd cineast
+  cd cineast || exit
 }
 
 # base-folder
