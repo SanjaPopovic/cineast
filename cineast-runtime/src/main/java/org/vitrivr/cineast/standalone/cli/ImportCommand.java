@@ -27,7 +27,6 @@ import org.vitrivr.cineast.standalone.importer.vbs2019.v3c1analysis.FacesImportH
 
 /**
  * A CLI command that can be used to start import of pre-extracted data.
- *
  */
 @Command(name = "import", description = "Starts import of pre-extracted data.")
 public class ImportCommand implements Runnable {
@@ -46,7 +45,7 @@ public class ImportCommand implements Runnable {
   @Option(name = {"-b", "--batchsize"}, description = "The batch size used for the import. Imported data will be persisted in batches of the specified size.")
   private int batchsize = 500;
 
-  @Option(name={"-c", "--clean"}, description = "Cleans, i.e. drops the tables before import. Use with caution, as the already imported data will be lost! Requires the import type to respect this option")
+  @Option(name = {"-c", "--clean"}, description = "Cleans, i.e. drops the tables before import. Use with caution, as the already imported data will be lost! Requires the import type to respect this option")
   private boolean clean = false;
 
   @Option(name = {"--no-finalize"}, title = "Do Not Finalize", description = "If this flag is not set, automatically rebuilds indices & optimizes all entities when writing to cottontail after the import. Set this flag when you want more performance with external parallelism.")
@@ -114,20 +113,20 @@ public class ImportCommand implements Runnable {
         handler = new MetaImportHandler(this.threads, this.batchsize, this.clean);
         break;
       case LSCCONCEPT:
-        handler = new VisualConceptTagImportHandler(this.threads,this.batchsize);
+        handler = new VisualConceptTagImportHandler(this.threads, this.batchsize);
         break;
       case LSCCAPTION:
         handler = new CaptionImportHandler(this.threads, this.batchsize);
         break;
     }
-    if(!isGoogleVision){
-      if(handler == null){
-        throw new RuntimeException("Cannot do import as the handler was not properly registered. Import type: "+type);
-      }else{
+    if (!isGoogleVision) {
+      if (handler == null) {
+        throw new RuntimeException("Cannot do import as the handler was not properly registered. Import type: " + type);
+      } else {
         handler.doImport(path);
         /* Only attempt to optimize Cottontail entities if we were importing into Cottontail, otherwise an unavoidable error message would be displayed when importing elsewhere. */
         if (!doNotFinalize && Config.sharedConfig().getDatabase().getSelector() == DatabaseConfig.Selector.COTTONTAIL && Config.sharedConfig().getDatabase().getWriter() == DatabaseConfig.Writer.COTTONTAIL) {
-          handler.waitForCompletion();  
+          handler.waitForCompletion();
           OptimizeEntitiesCommand.optimizeAllCottontailEntities();
         }
       }
@@ -138,17 +137,25 @@ public class ImportCommand implements Runnable {
 
   private void doVisionImport(Path path) {
     List<GoogleVisionImportHandler> handlers = new ArrayList<>();
+    GoogleVisionImportHandler _handler = new GoogleVisionImportHandler(this.threads, 40_000, GoogleVisionCategory.OCR, false);
+    _handler.doImport(path);
+    handlers.add(_handler);
+
+    handlers.forEach(GoogleVisionImportHandler::waitForCompletion);
+    /*
+    * We import neither full-text tags nor tags in general from the google-vision api from vbs21+ since we have expanded tags in a separate file
     for (GoogleVisionCategory category : GoogleVisionCategory.values()) {
       GoogleVisionImportHandler _handler = new GoogleVisionImportHandler(this.threads, 40_000, category, false);
       _handler.doImport(path);
       handlers.add(_handler);
-      if (category == GoogleVisionCategory.LABELS || category == GoogleVisionCategory.WEB) {
+       if (category == GoogleVisionCategory.LABELS || category == GoogleVisionCategory.WEB) {
         GoogleVisionImportHandler _handlerTrue = new GoogleVisionImportHandler(this.threads, 40_000, category, true);
         _handlerTrue.doImport(path);
         handlers.add(_handlerTrue);
       }
+
     }
-    handlers.forEach(GoogleVisionImportHandler::waitForCompletion);
+    */
   }
 
   /**
