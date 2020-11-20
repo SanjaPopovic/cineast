@@ -1,6 +1,6 @@
 #!/bin/bash
 # use ./vbs_setup.sh /tank/import/ 3 (3 being the number of threads), inside cineast-folder
-./gradlew cineast-runtime:fatJar
+./gradlew clean cineast-runtime:fatJar
 ./gradlew cineast-api:fatJar
 
 timestamp(){
@@ -13,7 +13,8 @@ restart_cottontail () {
   kill $(pgrep --full cottontail)
   cd ..
   cd cottontaildb || exit
-  tmux new-window -d -n cottontaildb "java -jar build/libs/cottontaildb-0.9.1-all.jar >> cottontail_$(timestamp).log"
+  ./gradlew clean shadowJar
+  tmux new-window -d -n cottontaildb "java -jar build/libs/cottontaildb-0.10-all.jar >> cottontail_$(timestamp).log"
   cd ..
   cd cineast || exit
 }
