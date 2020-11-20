@@ -61,7 +61,6 @@ public class ImportCommand implements Runnable {
     switch (type) {
       case PROTO:
         handler = new ProtoDataImportHandler(this.threads, this.batchsize);
-        handler.doImport(path);
         break;
       case JSON:
         handler = new JsonDataImportHandler(this.threads, this.batchsize);
@@ -96,12 +95,10 @@ public class ImportCommand implements Runnable {
         break;
       case V3C1CLASSIFICATIONS:
         handler = new ClassificationsImportHandler(this.threads, this.batchsize);
-        handler.doImport(path);
         break;
       case V3C1COLORLABELS:
         /* Be aware that this is metadata which might already be comprised in merged vbs metadata */
         handler = new ColorlabelImportHandler(this.threads, this.batchsize);
-        handler.doImport(path);
         break;
       case V3C1FACES:
         handler = new FacesImportHandler(this.threads, this.batchsize);
