@@ -24,7 +24,7 @@
         {"feature": "MedianFuzzyHist", "weight": 1.2},
         {"feature": "AverageFuzzyHist", "weight": 0.7},
         {"feature": "AverageFuzzyHistNormalized", "weight": 0.7},
-        {"feature": "HueHistogram", "weight": 0.7},
+        {"feature": "HueHistogram", "weight": 0.7}
       ],
       "localcolor": [
         {"feature": "AverageColorGrid8", "weight": 1.8},
