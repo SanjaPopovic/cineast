@@ -10,9 +10,17 @@ import java.util.List;
 import com.github.rvesse.airline.annotations.restrictions.Required;
 import org.vitrivr.cineast.core.config.DatabaseConfig;
 import org.vitrivr.cineast.standalone.config.Config;
-import org.vitrivr.cineast.standalone.importer.handlers.*;
+import org.vitrivr.cineast.standalone.importer.handlers.AsrDataImportHandler;
+import org.vitrivr.cineast.standalone.importer.handlers.DataImportHandler;
+import org.vitrivr.cineast.standalone.importer.handlers.JsonDataImportHandler;
+import org.vitrivr.cineast.standalone.importer.handlers.LIREImportHandler;
+import org.vitrivr.cineast.standalone.importer.handlers.OcrDataImportHandler;
+import org.vitrivr.cineast.standalone.importer.handlers.ProtoDataImportHandler;
 import org.vitrivr.cineast.standalone.importer.lsc2020.CaptionImportHandler;
+import org.vitrivr.cineast.standalone.importer.lsc2020.LSCAllTagsImportHandler;
 import org.vitrivr.cineast.standalone.importer.lsc2020.MetaImportHandler;
+import org.vitrivr.cineast.standalone.importer.lsc2020.OCRImportHandler;
+import org.vitrivr.cineast.standalone.importer.lsc2020.ProcessingMetaImportHandler;
 import org.vitrivr.cineast.standalone.importer.lsc2020.VisualConceptTagImportHandler;
 import org.vitrivr.cineast.standalone.importer.vbs2019.AudioTranscriptImportHandler;
 import org.vitrivr.cineast.standalone.importer.vbs2019.CaptionTextImportHandler;
@@ -115,18 +123,31 @@ public class ImportCommand implements Runnable {
       case LSCCAPTION:
         handler = new CaptionImportHandler(this.threads, this.batchsize);
         break;
+      case LSCX:
+        handler = new ProcessingMetaImportHandler(this.threads, this.batchsize, false);
+        break;
+      case LSCTABLE:
+        handler = new ProcessingMetaImportHandler(this.threads, this.batchsize, true);
+        break;
+      case LSC20TAGS:
+        handler = new LSCAllTagsImportHandler(this.threads, this.batchsize, clean);
+        break;
+      case LSCOCR:
+        handler = new OCRImportHandler(this.threads, this.batchsize, clean);
+        break;
     }
     if (!isGoogleVision) {
       if (handler == null) {
         throw new RuntimeException("Cannot do import as the handler was not properly registered. Import type: " + type);
       } else {
         handler.doImport(path);
-        /* Only attempt to optimize Cottontail entities if we were importing into Cottontail, otherwise an unavoidable error message would be displayed when importing elsewhere. */
-        if (!doNotFinalize && Config.sharedConfig().getDatabase().getSelector() == DatabaseConfig.Selector.COTTONTAIL && Config.sharedConfig().getDatabase().getWriter() == DatabaseConfig.Writer.COTTONTAIL) {
-          handler.waitForCompletion();
-          OptimizeEntitiesCommand.optimizeAllCottontailEntities();
-        }
       }
+    }
+
+    /* Only attempt to optimize Cottontail entities if we were importing into Cottontail, otherwise an unavoidable error message would be displayed when importing elsewhere. */
+    if (!doNotFinalize && Config.sharedConfig().getDatabase().getSelector() == DatabaseConfig.Selector.COTTONTAIL && Config.sharedConfig().getDatabase().getWriter() == DatabaseConfig.Writer.COTTONTAIL) {
+      handler.waitForCompletion();
+      OptimizeEntitiesCommand.optimizeAllCottontailEntities();
     }
 
     System.out.printf("Completed import of type %s for '%s'.%n", this.type, this.input);
@@ -159,6 +180,6 @@ public class ImportCommand implements Runnable {
    * Enum of the available types of data imports.
    */
   private enum ImportType {
-    PROTO, JSON, LIRE, ASR, OCR, AUDIO, TAGS, VBS2020, METADATA, AUDIOTRANSCRIPTION, CAPTIONING, GOOGLEVISION, V3C1CLASSIFICATIONS, V3C1COLORLABELS, V3C1FACES, V3C1ANALYSIS, OBJECTINSTANCE, LSCMETA, LSCCONCEPT, LSCCAPTION
+    PROTO, JSON, LIRE, ASR, OCR, AUDIO, TAGS, VBS2020, METADATA, AUDIOTRANSCRIPTION, CAPTIONING, GOOGLEVISION, V3C1CLASSIFICATIONS, V3C1COLORLABELS, V3C1FACES, V3C1ANALYSIS, OBJECTINSTANCE, LSCMETA, LSCCONCEPT, LSCCAPTION, LSCX, LSCTABLE, LSC20TAGS, LSCOCR
   }
 }
