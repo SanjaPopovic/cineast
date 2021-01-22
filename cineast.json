@@ -126,11 +126,12 @@
     "httpsPort": 4568,
     "legacyPort": 12345,
     "threadPoolSize": 12,
-    "serveContent": true,
-    "serveUI": true,
-    "uiLocation": "dist",
+    "serveContent": false,
+    "serveUI": false,
+    "uiLocation": "../vitrivr-ng/dist",
     "thumbnailLocation": "thumbnails",
-    "objectLocation": "objects"
+    "objectLocation": "objects",
+    "objectsFilesAreIDed": true
   },
 
   "monitoring":{
