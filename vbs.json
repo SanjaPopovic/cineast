@@ -115,7 +115,7 @@
     "legacyPort": 12345,
     "threadPoolSize": 12,
     "serveContent": false,
-    "serveUI": false,
+    "serveUI": false
   },
 
   "monitoring":{
