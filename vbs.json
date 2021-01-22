@@ -1,6 +1,6 @@
 {
   "database": {
-    "host": "10.34.58.135",
+    "host": "10.34.58.176",
     "selector": "COTTONTAIL",
     "writer": "COTTONTAIL",
     "port": 1865,
@@ -110,16 +110,12 @@
     "enableWebsocketSecure": false,
     "enableRest": true,
     "enableRestSecure": false,
-    "enableLegacy": false,
     "httpPort": 4567,
     "httpsPort": 4568,
     "legacyPort": 12345,
     "threadPoolSize": 12,
-    "serveContent": true,
-    "serveUI": true,
-    "uiLocation": "dist",
-    "thumbnailLocation": "thumbnails",
-    "objectLocation": "objects"
+    "serveContent": false,
+    "serveUI": false,
   },
 
   "monitoring":{
