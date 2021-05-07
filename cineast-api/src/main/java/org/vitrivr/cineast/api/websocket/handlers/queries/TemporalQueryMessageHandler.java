@@ -23,6 +23,14 @@ import org.vitrivr.cineast.core.data.score.SegmentScoreElement;
 import org.vitrivr.cineast.standalone.config.Config;
 import org.vitrivr.cineast.standalone.util.ContinuousRetrievalLogic;
 
+/**
+ * This class extends the {@link AbstractQueryMessageHandler} abstract class and handles messages of
+ * type {@link TemporalQuery}.
+ *
+ * @author silvanheller
+ * @version 1.0
+ * @created 17.02.20
+ */
 public class TemporalQueryMessageHandler extends AbstractQueryMessageHandler<TemporalQuery> {
 
   private static final Logger LOGGER = LogManager.getLogger();
@@ -33,15 +41,32 @@ public class TemporalQueryMessageHandler extends AbstractQueryMessageHandler<Tem
     this.continuousRetrievalLogic = retrievalLogic;
   }
 
+  /**
+   * Executes a {@link TemporalQuery}. Performs the staged similarity queries in temporal order
+   * based on the {@link QueryStage} objects provided in the {@link TemporalQuery}.
+   *
+   * @param session                             WebSocket session the invocation is associated
+   *                                            with.
+   * @param qconf                               The {@link QueryConfig} that contains additional
+   *                                            specifications.
+   * @param message                             Instance of {@link TemporalQuery}
+   * @param segmentIdsForWhichMetadataIsFetched Segment IDs for which metadata is fetched
+   * @param objectIdsForWhichMetadataIsFetched  Object IDs for which metadata is fetched
+   */
   @Override
-  public void execute(Session session, QueryConfig qconf, TemporalQuery message, Set<String> segmentIdsForWhichMetadataIsFetched, Set<String> objectIdsForWhichMetadataIsFetched) throws Exception {
+  public void execute(Session session, QueryConfig qconf, TemporalQuery message,
+      Set<String> segmentIdsForWhichMetadataIsFetched,
+      Set<String> objectIdsForWhichMetadataIsFetched) throws Exception {
     StopWatch watch = StopWatch.createStarted();
 
     /* Prepare QueryConfig (so as to obtain a QueryId). */
     final String uuid = qconf.getQueryId().toString();
-    final int max = qconf.getMaxResults().orElse(Config.sharedConfig().getRetriever().getMaxResults());
+    final int max = qconf.getMaxResults()
+        .orElse(Config.sharedConfig().getRetriever().getMaxResults());
     qconf.setMaxResults(max);
-    final int resultsPerModule = qconf.getRawResultsPerModule() == -1 ? Config.sharedConfig().getRetriever().getMaxResultsPerModule() : qconf.getResultsPerModule();
+    final int resultsPerModule =
+        qconf.getRawResultsPerModule() == -1 ? Config.sharedConfig().getRetriever()
+            .getMaxResultsPerModule() : qconf.getResultsPerModule();
     qconf.setResultsPerModule(resultsPerModule);
 
     List<Thread> metadataRetrievalThreads = new ArrayList<>();
@@ -86,7 +111,8 @@ public class TemporalQueryMessageHandler extends AbstractQueryMessageHandler<Tem
             }
             QueryContainer qc = qt.toContainer();
             if (qc == null) {
-              LOGGER.warn("Likely an empty query, as it could not be converted to a query container. Ignoring it");
+              LOGGER.warn(
+                  "Likely an empty query, as it could not be converted to a query container. Ignoring it");
               return;
             }
             qc.setContainerId(finalContainerIdx);
@@ -96,7 +122,8 @@ public class TemporalQueryMessageHandler extends AbstractQueryMessageHandler<Tem
             /* For each category of a specific queryterm, we actually go and retrieve. Be aware that we do not change the relevant ids after this call */
             for (String category : qt.getCategories()) {
               /* Merge partial results with score-map */
-              List<SegmentScoreElement> scores = continuousRetrievalLogic.retrieve(qc, category, stageQConf);
+              List<SegmentScoreElement> scores = continuousRetrievalLogic
+                  .retrieve(qc, category, stageQConf);
 
               /* Transform raw results into list of StringDoublePairs (segmentId -> score) */
               final List<StringDoublePair> results = scores.stream()
@@ -107,24 +134,33 @@ public class TemporalQueryMessageHandler extends AbstractQueryMessageHandler<Tem
                   .collect(Collectors.toList());
 
               if (results.isEmpty()) {
-                LOGGER.warn("No results found for category {} and qt {} in stage with id {}. Full compoment: {}", category, qt.getType(), finalContainerIdx, stage);
+                LOGGER.warn(
+                    "No results found for category {} and qt {} in stage with id {}. Full compoment: {}",
+                    category, qt.getType(), finalContainerIdx, stage);
               }
               if (cache.get(finalStageIndex).containsKey(category)) {
-                LOGGER.error("Category {} was used twice in stage {}. This erases the results of the previous category... ", category, finalStageIndex);
+                LOGGER.error(
+                    "Category {} was used twice in stage {}. This erases the results of the previous category... ",
+                    category, finalStageIndex);
               }
               cache.get(finalStageIndex).put(category, results);
               results.forEach(res -> relevantSegments.add(res.key));
-              LOGGER.trace("Category {} at stage {} executed @ {} ms", category, finalStageIndex, watch.getTime(TimeUnit.MILLISECONDS));
+              LOGGER.trace("Category {} at stage {} executed @ {} ms", category, finalStageIndex,
+                  watch.getTime(TimeUnit.MILLISECONDS));
 
               /* If this is the last stage, we can send relevant results per category back to the UI.
-               * Otherwise, we cannot since we might send results to the UI which would be filtered at a later stage
+              Otherwise, we cannot since we might send results to the UI which would be filtered at a later stage
                */
               if (finalStageIndex == stagedSimilarityQuery.stages.size() - 1) {
                 /* Finalize and submit per-container results */
-                List<String> segmentIds = results.stream().map(el -> el.key).collect(Collectors.toList());
-                List<String> objectIds = this.submitSegmentAndObjectInformation(session, uuid, segmentIds);
-                this.finalizeAndSubmitResults(session, uuid, category, qc.getContainerId(), results);
-                List<Thread> _threads = this.submitMetadata(session, uuid, segmentIds, objectIds, segmentIdsForWhichMetadataIsFetched, objectIdsForWhichMetadataIsFetched);
+                List<String> segmentIds = results.stream().map(el -> el.key)
+                    .collect(Collectors.toList());
+                List<String> objectIds = this
+                    .submitSegmentAndObjectInformation(session, uuid, segmentIds);
+                this.finalizeAndSubmitResults(session, uuid, category, qc.getContainerId(),
+                    results);
+                List<Thread> _threads = this.submitMetadata(session, uuid, segmentIds, objectIds,
+                    segmentIdsForWhichMetadataIsFetched, objectIdsForWhichMetadataIsFetched);
                 metadataRetrievalThreads.addAll(_threads);
               }
             }
@@ -157,7 +193,8 @@ public class TemporalQueryMessageHandler extends AbstractQueryMessageHandler<Tem
         int finalStageIndex = stageIndex;
         cache.get(stageIndex).forEach((category, results) -> {
           results.removeIf(pair -> !stageQConf.getRelevantSegmentIds().contains(pair.key));
-          Thread thread = new Thread(() -> this.finalizeAndSubmitResults(session, uuid, category, finalContainerIdx, results));
+          Thread thread = new Thread(() -> this
+              .finalizeAndSubmitResults(session, uuid, category, finalContainerIdx, results));
           thread.setName("finalization-stage" + finalStageIndex + "-" + category);
           thread.start();
           cleanupThreads.add(thread);

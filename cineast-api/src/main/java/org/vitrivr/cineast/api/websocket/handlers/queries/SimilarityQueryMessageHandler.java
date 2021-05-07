@@ -1,7 +1,10 @@
 package org.vitrivr.cineast.api.websocket.handlers.queries;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
@@ -14,11 +17,10 @@ import org.vitrivr.cineast.core.data.score.SegmentScoreElement;
 import org.vitrivr.cineast.standalone.config.Config;
 import org.vitrivr.cineast.standalone.util.ContinuousRetrievalLogic;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
+ * This class extends the {@link AbstractQueryMessageHandler} abstract class and handles messages of
+ * type {@link SimilarityQuery}.
+ *
  * @author rgasser
  * @version 1.0
  * @created 12.01.17
@@ -34,22 +36,30 @@ public class SimilarityQueryMessageHandler extends AbstractQueryMessageHandler<S
   }
 
   /**
-   * Executes a {@link SimilarityQuery}. Performs the similarity query based on the {@link QueryContainer} objects provided in the {@link SimilarityQuery}.
-   *  @param session WebSocket session the invocation is associated with.
-   * @param qconf The {@link QueryConfig} that contains additional specifications.
-   * @param message Instance of {@link SimilarityQuery}
-   * @param segmentIdsForWhichMetadataIsFetched
-   * @param objectIdsForWhichMetadataIsFetched
+   * Executes a {@link SimilarityQuery}. Performs the similarity query based on the {@link
+   * QueryContainer} objects provided in the {@link SimilarityQuery}.
+   *
+   * @param session                             WebSocket session the invocation is associated
+   *                                            with.
+   * @param qconf                               The {@link QueryConfig} that contains additional
+   *                                            specifications.
+   * @param message                             Instance of {@link SimilarityQuery}
+   * @param segmentIdsForWhichMetadataIsFetched Segment IDs for which metadata is fetched
+   * @param objectIdsForWhichMetadataIsFetched  Object IDs for which metadata is fetched
    */
   @Override
-  public void execute(Session session, QueryConfig qconf, SimilarityQuery message, Set<String> segmentIdsForWhichMetadataIsFetched, Set<String> objectIdsForWhichMetadataIsFetched) {
+  public void execute(Session session, QueryConfig qconf, SimilarityQuery message,
+      Set<String> segmentIdsForWhichMetadataIsFetched,
+      Set<String> objectIdsForWhichMetadataIsFetched) {
 
     /* Prepare QueryConfig (so as to obtain a QueryId). */
     final String uuid = qconf.getQueryId().toString();
 
     /* Prepare map that maps QueryTerms (as QueryContainer, ready for retrieval) and their associated categories */
-    final HashMap<QueryContainer, List<String>> containerCategoryMap = QueryComponent.toContainerMap(message.getComponents());
-    final int max = qconf.getMaxResults().orElse(Config.sharedConfig().getRetriever().getMaxResults());
+    final HashMap<QueryContainer, List<String>> containerCategoryMap = QueryComponent
+        .toContainerMap(message.getComponents());
+    final int max = qconf.getMaxResults()
+        .orElse(Config.sharedConfig().getRetriever().getMaxResults());
 
     List<Thread> threads = new ArrayList<>();
     /* Execute similarity queries for all QueryContainer -> Category combinations in the map */
@@ -70,7 +80,8 @@ public class SimilarityQueryMessageHandler extends AbstractQueryMessageHandler<S
         List<String> segmentIds = results.stream().map(el -> el.key).collect(Collectors.toList());
         List<String> objectIds = this.submitSegmentAndObjectInformation(session, uuid, segmentIds);
         this.finalizeAndSubmitResults(session, uuid, category, qc.getContainerId(), results);
-        List<Thread> _threads = this.submitMetadata(session, uuid, segmentIds, objectIds, segmentIdsForWhichMetadataIsFetched, objectIdsForWhichMetadataIsFetched);
+        List<Thread> _threads = this.submitMetadata(session, uuid, segmentIds, objectIds,
+            segmentIdsForWhichMetadataIsFetched, objectIdsForWhichMetadataIsFetched);
         threads.addAll(_threads);
       }
     }
