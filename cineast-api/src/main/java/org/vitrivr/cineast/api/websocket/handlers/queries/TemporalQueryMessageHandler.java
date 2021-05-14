@@ -98,6 +98,7 @@ public class TemporalQueryMessageHandler extends AbstractQueryMessageHandler<Tem
             /* For each category of a specific queryterm, we actually go and retrieve. Be aware that we do not change the relevant ids after this call */
             for (String category : qt.getCategories()) {
               /* Merge partial results with score-map */
+              System.out.println("CATEGORY: " + category);
               List<SegmentScoreElement> scores = continuousRetrievalLogic.retrieve(qc, category, stageQConf);
 
               /* Transform raw results into list of StringDoublePairs (segmentId -> score) */

@@ -873,6 +873,35 @@
         }
       }
     },
+    "/api/v1/find/boolean/table/select" : {
+      "post" : {
+        "tags" : [ "Misc" ],
+        "summary" : "Find all elements of given columns",
+        "description" : "Find all elements of given columns",
+        "operationId" : "SelectFromTable",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SelectSpecification"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SelectResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/status" : {
       "get" : {
         "tags" : [ "Status" ],
@@ -1200,9 +1229,6 @@
               "type" : "string"
             }
           },
-          "normIfEmpty" : {
-            "$ref" : "#/components/schemas/QueryConfig"
-          },
           "distanceIfEmpty" : {
             "$ref" : "#/components/schemas/QueryConfig"
           },
@@ -1215,6 +1241,9 @@
           "correspondenceFunction" : {
             "$ref" : "#/components/schemas/CorrespondenceFunction"
           },
+          "normIfEmpty" : {
+            "$ref" : "#/components/schemas/QueryConfig"
+          },
           "rawResultsPerModule" : {
             "type" : "integer",
             "format" : "int32"
@@ -1226,7 +1255,7 @@
         "properties" : {
           "type" : {
             "type" : "string",
-            "enum" : [ "IMAGE", "AUDIO", "MOTION", "MODEL3D", "LOCATION", "TIME", "TEXT", "TAG", "SEMANTIC", "ID", "BOOLEAN" ]
+            "enum" : [ "IMAGE", "AUDIO", "MOTION", "MODEL3D", "LOCATION", "TIME", "TEXT", "TAG", "SEMANTIC", "MAP", "ID", "BOOLEAN" ]
           },
           "data" : {
             "type" : "string",
@@ -1362,6 +1391,9 @@
       "Tag" : {
         "type" : "object",
         "properties" : {
+          "description" : {
+            "type" : "string"
+          },
           "name" : {
             "type" : "string"
           },
@@ -1370,9 +1402,6 @@
             "enum" : [ "REQUEST", "REQUIRE", "EXCLUDE" ]
           },
           "id" : {
-            "type" : "string"
-          },
-          "description" : {
             "type" : "string"
           }
         }
@@ -1508,6 +1537,38 @@
             "type" : "array",
             "items" : {
               "type" : "string"
+            }
+          }
+        }
+      },
+      "SelectSpecification" : {
+        "type" : "object",
+        "properties" : {
+          "table" : {
+            "type" : "string"
+          },
+          "columns" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "limit" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "SelectResult" : {
+        "type" : "object",
+        "properties" : {
+          "columns" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "string"
+              }
             }
           }
         }

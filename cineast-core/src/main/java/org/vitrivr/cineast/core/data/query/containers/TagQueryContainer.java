@@ -25,6 +25,7 @@ public class TagQueryContainer extends QueryContainer { // vitrivr pendant: TagQ
    * @param data The tag data that should be converted.
    */
   public TagQueryContainer(String data) {
+    System.out.println("tag = " + data);
     final JacksonJsonProvider jsonProvider = new JacksonJsonProvider();
     final String converted = DataURLParser.dataURLtoString(data, "application/json");
     final WeightedTag[] tags = jsonProvider.toObject(converted, IncompleteTag[].class);
