@@ -920,6 +920,44 @@
           }
         }
       }
+    },
+    "/thumbnails/{id}" : {
+      "get" : {
+        "summary" : "Get thumbnails with id",
+        "operationId" : "getThumbnailsWithId",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response"
+          }
+        }
+      }
+    },
+    "/objects/{id}" : {
+      "get" : {
+        "summary" : "Get objects with id",
+        "operationId" : "getObjectsWithId",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Default response"
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -1008,15 +1046,15 @@
               "type" : "string"
             }
           },
+          "messageType" : {
+            "type" : "string",
+            "enum" : [ "PING", "Q_SIM", "Q_MLT", "Q_NESEG", "Q_SEG", "M_LOOKUP", "Q_TEMPORAL", "SESSION_START", "QR_START", "QR_END", "QR_ERROR", "QR_OBJECT", "QR_METADATA_O", "QR_METADATA_S", "QR_SEGMENT", "QR_SIMILARITY" ]
+          },
           "idList" : {
             "type" : "array",
             "items" : {
               "type" : "string"
             }
-          },
-          "messageType" : {
-            "type" : "string",
-            "enum" : [ "PING", "Q_SIM", "Q_MLT", "Q_NESEG", "Q_SEG", "M_LOOKUP", "Q_TEMPORAL", "SESSION_START", "QR_START", "QR_END", "QR_ERROR", "QR_OBJECT", "QR_METADATA_O", "QR_METADATA_S", "QR_SEGMENT", "QR_SIMILARITY" ]
           }
         }
       },
@@ -1138,11 +1176,11 @@
             "type" : "number",
             "format" : "float"
           },
-          "count" : {
+          "sequenceNumber" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "sequenceNumber" : {
+          "count" : {
             "type" : "integer",
             "format" : "int32"
           }
@@ -1232,7 +1270,7 @@
           "distanceIfEmpty" : {
             "$ref" : "#/components/schemas/QueryConfig"
           },
-          "correspondenceFunctionIfEmpty" : {
+          "normIfEmpty" : {
             "$ref" : "#/components/schemas/QueryConfig"
           },
           "distanceWeightsIfEmpty" : {
@@ -1241,7 +1279,7 @@
           "correspondenceFunction" : {
             "$ref" : "#/components/schemas/CorrespondenceFunction"
           },
-          "normIfEmpty" : {
+          "correspondenceFunctionIfEmpty" : {
             "$ref" : "#/components/schemas/QueryConfig"
           },
           "rawResultsPerModule" : {
