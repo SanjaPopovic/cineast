@@ -62,6 +62,9 @@
       "tags": [
         {"feature": "SegmentTags", "weight": 1.0}
       ],
+      "map": [
+        {"feature": "MapSearch", "weight": 1.0}
+      ],
       "ocr": [
         {"feature": "OCRSearch", "weight": 1.0}
       ],

@@ -33,6 +33,7 @@ public class ContinuousRetrievalLogic {
 
   public List<SegmentScoreElement> retrieve(QueryContainer qc, String category,
       ReadableQueryConfig config) {
+    System.out.println(category);
     TObjectDoubleHashMap<Retriever> retrievers = Config.sharedConfig().getRetriever()
         .getRetrieversByCategory(category);
     if (retrievers.isEmpty()) {

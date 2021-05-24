@@ -134,7 +134,7 @@ public final class RetrievalRuntimeConfig {
 		for(RetrieverConfig config : list){
 
 			Retriever rev;
-
+			System.out.println("Retr-class = " + config.getRetrieverClass());
 			if(config.getProperties() == null){
 			    rev = ReflectionHelper.instanciate(config.getRetrieverClass());
             } else {

@@ -31,10 +31,17 @@ public class Circle {
         this.lon = lon;
         this.rad = rad;
         this.semantic_name = semantic_name;
-        System.out.println("type = " + this.type);
+        /*System.out.println("type = " + this.type);
         System.out.println("lat = " + this.lat);
         System.out.println("lon = " + this.lon);
         System.out.println("rad = " + this.rad);
-        System.out.println("semantic_name = " + this.semantic_name);
+        System.out.println("semantic_name = " + this.semantic_name);*/
+    }
+    public double getLat() {
+        return this.lat;
+    }
+
+    public double getLon() {
+        return this.lon;
     }
 }

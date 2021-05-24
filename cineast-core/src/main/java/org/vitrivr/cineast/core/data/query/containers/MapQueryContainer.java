@@ -1,9 +1,6 @@
 package org.vitrivr.cineast.core.data.query.containers;
 
 import org.vitrivr.cineast.core.data.Circle;
-import org.vitrivr.cineast.core.data.Region;
-import org.vitrivr.cineast.core.data.tag.IncompleteTag;
-import org.vitrivr.cineast.core.data.tag.WeightedTag;
 import org.vitrivr.cineast.core.util.json.JacksonJsonProvider;
 import org.vitrivr.cineast.core.util.web.DataURLParser;
 
@@ -13,7 +10,7 @@ import java.util.List;
 
 public class MapQueryContainer extends QueryContainer { // vitrivr pendant: MapQueryTerm
 
-    private List regions; //<region
+    private List<Circle> regions; //<region
 
     public MapQueryContainer(String data) {
         final JacksonJsonProvider jsonProvider = new JacksonJsonProvider();
@@ -24,8 +21,11 @@ public class MapQueryContainer extends QueryContainer { // vitrivr pendant: MapQ
         } else {
             this.regions = new ArrayList<>(0);
         }
-        System.out.println(locations);
+        // System.out.println(locations);
     }
 
-
+    @Override
+    public List<Circle> getRegions() {
+        return this.regions;
+    }
 }

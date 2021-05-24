@@ -16,6 +16,7 @@ public interface SegmentContainer
         AudioSTFTProvider,
         MeshProvider,
         VoxelGridProvider,
+        MapSearchProvider,
         LocationProvider,
         InstantProvider,
         TextProvider,
