@@ -8,6 +8,7 @@ import org.vitrivr.cineast.core.data.segments.SegmentContainer;
 import org.vitrivr.cineast.core.db.DBSelectorSupplier;
 import org.vitrivr.cineast.core.features.abstracts.AbstractFeatureModule;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class MapSearch extends AbstractFeatureModule {
         if (circles.isEmpty()) {
 
         }
-        List<ScoreElement> scoreElements = Collections.emptyList();
+        List<ScoreElement> scoreElements = new ArrayList();
         System.out.println(sc.getRegions());
         for (Circle circle: circles) {
             double lat = circle.getLat();
