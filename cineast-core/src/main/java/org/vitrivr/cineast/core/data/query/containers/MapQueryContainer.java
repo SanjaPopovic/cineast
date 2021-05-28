@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MapQueryContainer extends QueryContainer { // vitrivr pendant: MapQueryTerm
 
-    private List<Circle> regions; //<region
+    private List<Circle> regions;
 
     public MapQueryContainer(String data) {
         final JacksonJsonProvider jsonProvider = new JacksonJsonProvider();
@@ -21,7 +21,6 @@ public class MapQueryContainer extends QueryContainer { // vitrivr pendant: MapQ
         } else {
             this.regions = new ArrayList<>(0);
         }
-        // System.out.println(locations);
     }
 
     @Override

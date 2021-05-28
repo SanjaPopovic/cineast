@@ -66,14 +66,13 @@ public abstract class AbstractFeatureModule implements Extractor, Retriever {
         this.phandler = phandlerSupply.get();
         this.writer = new SimpleFeatureDescriptorWriter(this.phandler, this.tableName, batchSize);
         this.primitiveWriter = new PrimitiveTypeProviderFeatureDescriptorWriter(this.phandler, this.tableName, batchSize);
-        System.out.println("HERE IN INIT1");
     }
 
     @Override
     public void init(DBSelectorSupplier selectorSupply) {
         this.selector = selectorSupply.get();
         this.selector.open(this.tableName);
-        System.out.println("HERE IN INIT2");
+        LOGGER.debug("Class for feature extraction is created");
     }
 
     protected void persist(String shotId, ReadableFloatVector fv) {

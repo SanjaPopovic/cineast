@@ -2,12 +2,14 @@ package org.vitrivr.cineast.core.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.vitrivr.cineast.core.data.tag.IncompleteTag;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 
 public class Circle {
 
+    private static final Logger LOGGER = LogManager.getLogger();
     private final String type, semantic_name;
     private final double lat, lon, rad;
 
@@ -31,11 +33,11 @@ public class Circle {
         this.lon = lon;
         this.rad = rad;
         this.semantic_name = semantic_name;
-        /*System.out.println("type = " + this.type);
-        System.out.println("lat = " + this.lat);
-        System.out.println("lon = " + this.lon);
-        System.out.println("rad = " + this.rad);
-        System.out.println("semantic_name = " + this.semantic_name);*/
+        /*LOGGER.debug("type = " + this.type);
+        LOGGER.debug("lat = " + this.lat);
+        LOGGER.debug("lon = " + this.lon);
+        LOGGER.debug("rad = " + this.rad);
+        LOGGER.debug("semantic_name = " + this.semantic_name);*/
     }
     public double getLat() {
         return this.lat;

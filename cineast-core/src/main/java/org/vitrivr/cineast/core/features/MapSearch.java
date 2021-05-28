@@ -9,7 +9,6 @@ import org.vitrivr.cineast.core.db.DBSelectorSupplier;
 import org.vitrivr.cineast.core.features.abstracts.AbstractFeatureModule;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MapSearch extends AbstractFeatureModule {
@@ -27,9 +26,6 @@ public class MapSearch extends AbstractFeatureModule {
 
     @Override
     public List<ScoreElement> getSimilar(SegmentContainer sc, ReadableQueryConfig qc) {
-       /* sc.getRegions();
-        float[] vector = new float[]
-        return this.getSimilar()*/
         List<Circle> circles = sc.getRegions();
         if (circles.isEmpty()) {
 
@@ -40,12 +36,10 @@ public class MapSearch extends AbstractFeatureModule {
             double lat = circle.getLat();
             double lon = circle.getLon();
             float[] vec = {(float)lat, (float)lon};
-            ReadableQueryConfig qc_new = new QueryConfig(qc).setDistanceIfEmpty(QueryConfig.Distance.euclidean);
+            ReadableQueryConfig qc_new = new QueryConfig(qc).setDistanceIfEmpty(QueryConfig.Distance.haversine);
             scoreElements.addAll(getSimilar(vec, qc_new));
         }
-        // new QueryConfig(qc).setDistanceWeights(p.second)
-        // return new QueryConfig(qc).setDistanceIfEmpty(QueryConfig.Distance.euclidean);
-        return scoreElements;//getSimilar(,QueryConfig(qc).setDistanceIfEmpty(QueryConfig.Distance.haversine));
+        return scoreElements; //getSimilar(,QueryConfig(qc).setDistanceIfEmpty(QueryConfig.Distance.haversine));
 
     }
 }
