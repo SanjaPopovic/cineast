@@ -46,4 +46,12 @@ public class Circle {
     public double getLon() {
         return this.lon;
     }
+
+    public double getRad() {
+        return this.rad;
+    }
+
+    public String getType() {
+        return this.type;
+    }
 }
