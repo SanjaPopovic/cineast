@@ -146,7 +146,7 @@ public class QueryConfig extends ReadableQueryConfig {
     return this;
   }
 
-  protected QueryConfig setCorrespondenceFunction(CorrespondenceFunction f) {
+  public QueryConfig setCorrespondenceFunction(CorrespondenceFunction f) {
     Objects.requireNonNull(f, "Correspondence function cannot be null");
     this.correspondence = f;
     return this;

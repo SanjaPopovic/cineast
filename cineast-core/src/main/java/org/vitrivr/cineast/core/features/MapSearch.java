@@ -22,7 +22,7 @@ public class MapSearch extends AbstractFeatureModule {
     private static final String MARKER_TYPE = "info";
 
     public MapSearch() {
-        super(LOCATION_TABLE_NAME, 100, 2); // 100m
+        super(LOCATION_TABLE_NAME, 10000, 2);
     }
 
     @Override
@@ -39,12 +39,12 @@ public class MapSearch extends AbstractFeatureModule {
         LOGGER.debug(sc.getRegions());
         ReadableQueryConfig qc_new;
         HashMap<String, ScoreElement> distinctElements = new HashMap<>();
-        for (Circle circle: circles) { // else if
+        for (Circle circle: circles) {
             // if marker: rad is 0
             if (circle.getType().equals(MARKER_TYPE)) {
                 qc_new = new QueryConfig(qc).setDistanceIfEmpty(QueryConfig.Distance.haversine);
             } else {
-                qc_new = new QueryConfig(qc).setDistanceIfEmpty(QueryConfig.Distance.haversine).setCorrespondenceFunctionIfEmpty(CorrespondenceFunction.linear(circle.getRad()));
+                qc_new = new QueryConfig(qc).setDistanceIfEmpty(QueryConfig.Distance.haversine).setCorrespondenceFunction(CorrespondenceFunction.linear(circle.getRad()));
             }
             double lat = circle.getLat();
             double lon = circle.getLon();
@@ -52,16 +52,22 @@ public class MapSearch extends AbstractFeatureModule {
             LOGGER.debug("Check fractionScoreElements");
             List<ScoreElement> fractionScoreElements = getSimilar(vec, qc_new);
             for (ScoreElement e: fractionScoreElements) {
-                distinctElements.put(e.getId(), e);
-                LOGGER.debug(e.getId());
+                if (distinctElements.containsKey(e.getId())) {
+                    if (e.getScore() > distinctElements.get(e.getId()).getScore()) { // has the new element a bigger score, than the scoreelement in the list?
+                        distinctElements.put(e.getId(), e);
+                    }
+                } else {
+                    distinctElements.put(e.getId(), e);
+                }
+                // LOGGER.debug(e.getId());
             }
         }
-        List<ScoreElement> scoreElements = new ArrayList<ScoreElement>();
+        List<ScoreElement> scoreElements = new ArrayList<>();
         scoreElements.addAll(distinctElements.values()); // insert all distinct ScoreElements
         LOGGER.debug("Check scoreElements");
         for (ScoreElement e: scoreElements) {
             LOGGER.debug(e.getId());
         }
-        return scoreElements; //getSimilar(,QueryConfig(qc).setDistanceIfEmpty(QueryConfig.Distance.haversine));
+        return scoreElements;
     }
 }
