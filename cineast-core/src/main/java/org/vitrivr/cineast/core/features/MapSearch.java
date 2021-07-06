@@ -22,7 +22,7 @@ public class MapSearch extends AbstractFeatureModule {
     private static final String MARKER_TYPE = "info";
 
     public MapSearch() {
-        super(LOCATION_TABLE_NAME, 10000, 2);
+        super(LOCATION_TABLE_NAME, 200, 2);
     }
 
     @Override
