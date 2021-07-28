@@ -15,6 +15,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This class is the feature module for the map-based query term.
+ * It transforms circle-objects into 2-dimensional vectors.
+ * If the circle object represents a pin, then the (in the constructor) predefined maximal distance
+ * of 200(m) is applied. If the circle object represents a drawn circle, the rad variable in
+ * the circle object is used. This is important for scoring. Vectors that lie outside will be scored zero.
+ * Multiple ScoreElements can refer to one document and ScoreElements from each vector retrieval have
+ * to be fused so that each document is referred to once. The ScoreElement with the highest score is
+ * accepted.
+ */
 public class MapSearch extends AbstractFeatureModule {
 
     private static final Logger LOGGER = LogManager.getLogger();

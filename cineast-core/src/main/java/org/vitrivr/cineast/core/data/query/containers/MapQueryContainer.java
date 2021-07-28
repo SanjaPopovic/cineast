@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The class is instantiated when the final query contains a map query term. The circles and pins that the user created
+ * in the map (UI) are converted into single circle objects.
+ */
 public class MapQueryContainer extends QueryContainer { // vitrivr pendant: MapQueryTerm
 
     private List<Circle> regions;

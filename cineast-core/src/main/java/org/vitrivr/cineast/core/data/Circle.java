@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.List;
 
+/**
+ * An instance of this class saves the information of one (in the UI) drawn circle or pin.
+ */
 public class Circle {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -16,11 +18,11 @@ public class Circle {
     /**
      * Constructor for {@link Circle}. Used to create object from JSON.
      *
-     * @param type       The type indicates if a circle is drawn or if a location was given as tag. 'circle' or 'info'
-     * @param lat        The latitude of the circle.
-     * @param lon        The longitude of the circle.
-     * @param rad        The radius of the circle.
-     * @param semantic_name The name of the location, when circe is drawn.
+     * @param type       The type indicates if it is a drawn circle or a pin. 'circle' or 'info'
+     * @param lat        The latitude of the circle/pin.
+     * @param lon        The longitude of the circle/pin.
+     * @param rad        The radius of the drawn circle.
+     * @param semantic_name The name of the location, where the pin is created.
      */
     @JsonCreator
     public Circle(@JsonProperty(value = "type") String type,
